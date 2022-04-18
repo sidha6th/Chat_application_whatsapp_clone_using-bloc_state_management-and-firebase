@@ -1,0 +1,71 @@
+import 'package:chat_app/extra/exports/exports.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+part 'login_event.dart';
+part 'login_state.dart';
+
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  LoginBloc() : super(LoginInitial()) {
+    getOtp(GetOtp event, Emitter<LoginState> emit) async {
+      await state.auth.verifyPhoneNumber(
+        phoneNumber: event.phoneNumber,
+        verificationCompleted: (PhoneAuthCredential _credential) {
+          state.credential = _credential;
+        },
+        verificationFailed: (FirebaseAuthException exeption) {},
+        codeSent: (String _verificationId, int? _token) {
+          state.verificationId = _verificationId;
+          state.token = _token;
+        },
+        codeAutoRetrievalTimeout: (String timeout) {
+          ScaffoldMessenger.of(event.context).showSnackBar(
+            const SnackBar(
+              content: TextWidget(text: 'Otp time out'),
+            ),
+          );
+        },
+        timeout: const Duration(seconds: 70),
+      );
+      state.phone = event.phoneNumber;
+    }
+
+    verifyOtp(VerifyOtp event, Emitter<LoginState> emit) async {
+      PhoneAuthCredential credential;
+      try {
+        credential = PhoneAuthProvider.credential(
+          verificationId: state.verificationId ?? '',
+          smsCode: event.otp,
+        );
+        debugPrint(event.otp.toString());
+        UserCredential cred = await state.auth.signInWithCredential(credential);
+        state.user = cred.user;
+      } on FirebaseAuthException catch (e) {
+        debugPrint(e.message);
+        state.loginException = e.message;
+      }
+
+      state.user != null
+          ? {
+              LoginState.prefs = await SharedPreferences.getInstance(),
+              await LoginState.prefs?.setString(
+                LoginState.phoneNumberKey,
+                state.phone.toString(),
+              ),
+              Navigator.of(event.context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => const ProfileSettingPage(),
+                ),
+              ),
+            }
+          : ScaffoldMessenger.of(event.context).showSnackBar(
+              const SnackBar(
+                content: TextWidget(
+                  text: 'Incorrect Otp number',
+                ),
+              ),
+            );
+    }
+
+    on<GetOtp>(getOtp);
+    on<VerifyOtp>(verifyOtp);
+  }
+}
