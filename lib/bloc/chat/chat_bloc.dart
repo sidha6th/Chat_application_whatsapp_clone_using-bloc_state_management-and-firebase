@@ -1,5 +1,7 @@
+import 'package:chat_app/bloc/login/login_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/model/chats_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -7,6 +9,12 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(ChatState(chatData: [])) {
     sentMessage(SentMessage event, Emitter<ChatState> emit) async {
+      if (ChatState.userPhoneNumber == null) {
+        LoginState.prefs = await SharedPreferences.getInstance();
+        ChatState.userPhoneNumber = LoginState.prefs?.getString(
+          LoginState.phoneNumberKey,
+        );
+      }
       ChatDetailsModel data = ChatDetailsModel(
         messageRecieverphoneNumber: event.phone,
         isSent: true,
@@ -16,36 +24,68 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
       ChatState.textMsg.value = '';
       DatabaseReference reference = FirebaseDatabase.instance.ref();
-      await reference
-          .child('+91 62385 27898'.trim())
-          .child('8589960399')
-          .push()
-          .set(data.toJson());
-      state.chatData.add(data);
+      if (ChatState.userPhoneNumber != null) {
+        await reference
+            .child(
+              //event.phone.trim(),
+              ChatState.userPhoneNumber!.trim(),
+            )
+            .child(
+              event.phone.trim(),
+              //ChatState.userPhoneNumber!.trim(),
+            )
+            .push()
+            .set(
+              data.toJson(),
+            );
+        state.chatData.add(
+          data,
+        );
+      }
+      if (ChatState.userPhoneNumber != null) {
+        DatabaseEvent dEvent =
+            await reference.child(ChatState.userPhoneNumber!).once();
+        print(dEvent.previousChildKey);
+      }
       emit(
-        ChatState(chatData: state.chatData),
+        ChatState(
+          chatData: state.chatData,
+        ),
       );
     }
 
     getConversations(GetConversations event, Emitter<ChatState> emit) {
-      '+91 62385 27898';
-      // ignore: deprecated_member_use
-      // data = FirebaseDatabase.instance.reference();
-      // data.child(event.phone).onValue.listen(
+      DatabaseReference data = FirebaseDatabase.instance.ref();
+      // data
+      //     .child(
+      //       event.phone,
+      //     )
+      //     .onValue
+      //     .listen(
       //   (events) {
-      //     Map dat = events.snapshot.value;
+      //     events.snapshot.value;
       //   },
       // );
-      //   FirebaseDatabase.instance
-      //       .ref()
-      //       .child('+91 62385 27898'.trim())
-      //       .child('8589960399')
-      //       .once()
-      //       .then(((value) {
-      //  //  var dat = Map<String, dynamic>.from(value.snapshot.value).;
-      //   }));
+      // FirebaseDatabase.instance
+      //     .ref()
+      //     .child(
+      //       '+91 62385 27898'.trim(),
+      //     )
+      //     .child(
+      //       '8589960399',
+      //     )
+      //     .once()
+      //     .then(
+      //   ((value) {
+      //      value.snapshot.value;
+      //   }),
+      // );
 
-      emit(ChatState(chatData: state.chatData));
+      emit(
+        ChatState(
+          chatData: state.chatData,
+        ),
+      );
     }
 
     on<SentMessage>(sentMessage);

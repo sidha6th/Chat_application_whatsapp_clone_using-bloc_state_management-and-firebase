@@ -35,17 +35,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           verificationId: state.verificationId ?? '',
           smsCode: event.otp,
         );
-        debugPrint(event.otp.toString());
-        UserCredential cred = await state.auth.signInWithCredential(credential);
+        debugPrint(
+          event.otp.toString(),
+        );
+        UserCredential cred = await state.auth.signInWithCredential(
+          credential,
+        );
         state.user = cred.user;
       } on FirebaseAuthException catch (e) {
-        debugPrint(e.message);
         state.loginException = e.message;
       }
 
       state.user != null
           ? {
               LoginState.prefs = await SharedPreferences.getInstance(),
+              await LoginState.prefs?.setBool(
+                LoginState.isLoginedKey,
+                true,
+              ),
               await LoginState.prefs?.setString(
                 LoginState.phoneNumberKey,
                 state.phone.toString(),

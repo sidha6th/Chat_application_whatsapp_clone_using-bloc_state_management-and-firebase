@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:chat_app/bloc/login/login_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/model/user_model.dart';
@@ -47,17 +46,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         about: event.userAbout,
         dpImage: state.encodededImg,
       );
-      await FirebaseFirestore.instance
-          .doc('UserData')
-          .collection(
-            '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',
-          )
-          .add(
-            data.toJson(),
-          );
+      final DocumentReference<Map<String, dynamic>> doc =
+          FirebaseFirestore.instance.collection(
+              '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',)
+              .doc();
+      data.id = doc.id;
+      await doc.set(
+        data.toJson(),
+      );
     }
 
-    on<AddDpImage>(addDpImage);
-    on<SaveUserDatas>(saveUserDatas);
+    on<AddDpImage>(
+      addDpImage,
+    );
+    on<SaveUserDatas>(
+      saveUserDatas,
+    );
   }
 }

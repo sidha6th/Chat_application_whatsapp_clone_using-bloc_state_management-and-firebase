@@ -1,8 +1,6 @@
 import 'package:chat_app/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
 
-
-
 class BottomInputSection extends StatelessWidget {
   const BottomInputSection({
     required this.name,
@@ -13,7 +11,6 @@ class BottomInputSection extends StatelessWidget {
   final String phone;
   final String name;
   final Size size;
-
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +24,7 @@ class BottomInputSection extends StatelessWidget {
           SizedBox(
             width: size.width * 0.85,
             child: TextField(
+              controller: ChatState.messageController,
               onChanged: (String value) {
                 ChatState.textMsg.value = value;
               },
@@ -129,6 +127,7 @@ class BottomInputSection extends StatelessWidget {
                     message: ChatState.textMsg.value,
                   ),
                 );
+                ChatState.messageController.clear();
               },
             ),
           ),

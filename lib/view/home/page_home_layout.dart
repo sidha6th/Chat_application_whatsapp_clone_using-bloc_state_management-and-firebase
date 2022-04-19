@@ -62,23 +62,27 @@ class _MyHomePageState extends State<MyHomePage>
             ]),
         body: TabBarView(
           controller: _tabController,
-          children:  <Widget>[
-           const Center(
+          children: <Widget>[
+            const Center(
               child: Text(
                 'data',
               ),
             ),
             SizedBox(
               width: size.width,
-                height: size.height,
-              child: const MainChatScreen()),
-            SizedBox(
-              width: size.width, height: size.height,
-              child:const StatusPage()),
+              height: size.height,
+              child: const MainChatScreen(),
+            ),
             SizedBox(
               width: size.width,
-                height: size.height,
-              child:const MainCallsScreen()),
+              height: size.height,
+              child: const StatusPage(),
+            ),
+            SizedBox(
+              width: size.width,
+              height: size.height,
+              child: const MainCallsScreen(),
+            ),
           ],
         ),
       ),

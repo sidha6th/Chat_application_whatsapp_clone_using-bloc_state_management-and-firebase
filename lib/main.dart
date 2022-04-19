@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           primaryColorDark: Colors.black,
           primaryColorLight: Colors.white,
         ),
-        home: const MyHomePage(),
+        home: const SplashScreen(),
       ),
     );
   }

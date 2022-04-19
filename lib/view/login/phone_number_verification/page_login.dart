@@ -48,10 +48,9 @@ class LoginScreen extends StatelessWidget {
                     horizontal: 50,
                   ),
                   child: Column(
-                    children:const <Widget>[
-                       DropDownWidget(),
-                      LoginTextFieldWidget(
-                      ),
+                    children: const <Widget>[
+                      DropDownWidget(),
+                      LoginTextFieldWidget(),
                     ],
                   ),
                 ),
@@ -67,11 +66,10 @@ class LoginScreen extends StatelessWidget {
               child: NextbuttonWidget(
                 navigation: () {
                   if (LoginState.formkey.currentState!.validate()) {
-                    final String phoneNumber =
-                        '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}';
                     BlocProvider.of<LoginBloc>(context).add(
                       GetOtp(
-                        phoneNumber: phoneNumber,
+                        phoneNumber:
+                            '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',
                         context: context,
                       ),
                     );

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "chat_app")
-set(APPLICATION_ID "com.example.chat_app")
+set(APPLICATION_ID "com.example.chat_clone_app")
 
 cmake_policy(SET CMP0063 NEW)
 

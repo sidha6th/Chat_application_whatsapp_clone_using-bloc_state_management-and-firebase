@@ -16,7 +16,12 @@ class OtpVarificationPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          OtpTextfieldWidget(),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
+            child: OtpTextfieldWidget(),
+          ),
           SizedBox(
             height: 20,
           ),

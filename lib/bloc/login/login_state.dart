@@ -4,6 +4,7 @@ class LoginState {
   static final otpTextController = TextEditingController();
   static final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   String? phone;
+  static String isLoginedKey ='isLoginedKey';
   static const String phoneNumberKey = 'phone';
   static SharedPreferences? prefs;
   User? user;

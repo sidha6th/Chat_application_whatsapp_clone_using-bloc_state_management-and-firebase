@@ -11,17 +11,29 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    context.read<SplashBloc>().add(CheckUserLoggedInOrNot(),);
+    context.read<SplashBloc>().add(
+          CheckUserLoggedInOrNot(),
+        );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SplashBloc, SplashState>(
-      bloc: context.read<SplashBloc>(),
-      builder: (context, state) {
-        return state.isUSerLoggedIn == false ?const LoginScreen() : const MyHomePage();
-      },
+    return Scaffold(
+      body: BlocBuilder<SplashBloc, SplashState>(
+        bloc: context.read<SplashBloc>(),
+        builder: (context, state) {
+          if (state.checking == true) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return state.isUSerLoggedIn == false
+                ? const LoginScreen()
+                : const MyHomePage();
+          }
+        },
+      ),
     );
   }
 }

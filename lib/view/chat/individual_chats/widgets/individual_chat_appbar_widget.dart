@@ -19,7 +19,7 @@ class IndividualChatAppBarWidget extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
       ),
       automaticallyImplyLeading: true,
-      leadingWidth: 80,
+      leadingWidth: 90,
       leading: Row(
         children: <Widget>[
           IconButton(
@@ -41,7 +41,7 @@ class IndividualChatAppBarWidget extends StatelessWidget {
               30,
               30,
             ),
-            radius: 50,
+            radius: 30,
           ),
         ],
       ),

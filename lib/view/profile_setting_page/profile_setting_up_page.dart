@@ -52,9 +52,9 @@ class ProfileSettingPage extends StatelessWidget {
                   builder: (context, state) {
                     return UserProfileDpShowingWidget(
                                   profileState:state,
-                                  radius: 60,
+                                  radius: 50,
                                   icon: Icons.add_a_photo,
-                                  size: 20,
+                                  iconsize: 30,
                                 );
                   },
                 ),
@@ -150,7 +150,7 @@ class ProfileSettingPage extends StatelessWidget {
                   context.read<ProfileBloc>().add(
                         SaveUserDatas(
                           userName: ProfileState.usernameController.text,
-                          userAbout: ProfileState.usernameController.text,
+                          userAbout: ProfileState.aboutFieldController.text,
                         ),
                       );
                   Navigator.of(context).pushAndRemoveUntil(

@@ -5,20 +5,22 @@ import 'package:chat_app/extra/exports/exports.dart';
 
 class UserProfileDpShowingWidget extends StatelessWidget {
   const UserProfileDpShowingWidget({
+    this.iconColor=white,
     this.groupState,
     this.profileState,
     this.backgroundColor = grey,
-    this.size = 20,
+    this.iconsize = 20,
     this.radius = 30,
     required this.icon,
     Key? key,
   }) : super(key: key);
   final double radius;
   final IconData icon;
-  final double size;
+  final double iconsize;
   final Color backgroundColor;
   final GroupState? groupState;
   final ProfileState? profileState;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class UserProfileDpShowingWidget extends StatelessWidget {
       child: profileState?.encodededImg == null
           ? Icon(
               icon,
-              size: size,
+              size: iconsize,
+              color: iconColor,
             )
           : CircleAvatar(
               radius: radius,

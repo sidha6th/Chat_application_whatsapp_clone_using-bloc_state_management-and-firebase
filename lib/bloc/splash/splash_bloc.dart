@@ -6,15 +6,22 @@ part 'splash_event.dart';
 part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc() : super(SplashInitial(isUSerLoggedIn: false)) {
+  SplashBloc()
+      : super(SplashState(
+          isUSerLoggedIn: false,
+          checking: true,
+        )) {
     on<CheckUserLoggedInOrNot>((event, emit) async {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? userPhoneNumber = pref.getString(
-        LoginState.phoneNumberKey,
-      );
+
+      LoginState.prefs = await SharedPreferences.getInstance();
+      bool? islogined=LoginState.prefs?.getBool(LoginState.isLoginedKey);
+      // String? userPhoneNumber = LoginState.prefs?.getString(
+      //   LoginState.phoneNumberKey,
+      // );
       emit(
         SplashState(
-          isUSerLoggedIn: userPhoneNumber == null ? false : true,
+          checking: false,
+          isUSerLoggedIn: (islogined == null|| islogined == false) ? false : true,
         ),
       );
     });
