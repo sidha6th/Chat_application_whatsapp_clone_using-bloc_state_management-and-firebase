@@ -20,38 +20,50 @@ class ContactScreen extends StatelessWidget {
         height: MediaQuery.of(context).size.height,
         child: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
-            return state.contacts.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView(
-                  shrinkWrap: true,
-                  controller: state.scrollController,
-                  children: [
-                    ListTile(
-                      leading:const UserProfileDpShowingWidget(
-                        backgroundColor: darkGreen,
-                        icon: Icons.group,
-                        radius: 20,
-                      ),
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) =>
-                                GroupCreatingPage(homeState: state),
+            if (state.isDenied) {
+              return const Center(
+                child: TextWidget(
+                  text: 'Permission Denied',
+                ),
+              );
+            } else if (state.contacts.isEmpty) {
+              return const Scaffold(
+                backgroundColor: homeColor,
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              return ListView(
+                shrinkWrap: true,
+                controller: state.scrollController,
+                children: [
+                  ListTile(
+                    leading: const UserProfileDpShowingWidget(
+                      backgroundColor: darkGreen,
+                      icon: Icons.group,
+                      radius: 20,
+                    ),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => GroupCreatingPage(
+                            homeState: state,
                           ),
-                        );
-                      },
-                      title:const TextWidget(
-                        text: 'Create group',
-                      ),
+                        ),
+                      );
+                    },
+                    title: const TextWidget(
+                      text: 'Create group',
                     ),
-                    ContactListHoldingWidget(
-                      homeState: state,
-                    ),
-                  ],
-                );
+                  ),
+                  ContactListHoldingWidget(
+                    homeState: state,
+                  ),
+                ],
+              );
+            }
           },
         ),
       ),

@@ -71,7 +71,9 @@ class _MyHomePageState extends State<MyHomePage>
             SizedBox(
               width: size.width,
               height: size.height,
-              child: const MainChatScreen(),
+              child: MainChatScreen(
+                context: context,
+              ),
             ),
             SizedBox(
               width: size.width,
@@ -95,21 +97,16 @@ class _MyHomePageState extends State<MyHomePage>
                   child: Icon(
                     floatingIcon[current],
                   ),
-                  onPressed: (() async {
-                    getcontacts() async =>
-                        BlocProvider.of<HomeBloc>(context).add(
-                          GetContacts(),
-                        );
-                    await getcontacts().then(
-                      (value) => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: ((context) {
-                            return const ContactScreen();
-                          }),
-                        ),
+                  onPressed: () {
+                    BlocProvider.of<HomeBloc>(context).add(GetContacts());
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: ((context) {
+                          return const ContactScreen();
+                        }),
                       ),
                     );
-                  }),
+                  },
                 )
               : const SizedBox();
         },

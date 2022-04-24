@@ -32,5 +32,3 @@ export 'package:chat_app/view/login/otp_verification_screen/otp_varification_pag
 export 'package:chat_app/view/contacts/group_crea/widgets/group_creation_appbar_widget.dart';
 export 'package:chat_app/view/contacts/group_crea/group_creating_final_page.dart';
 export 'package:chat_app/view/splash_screen/splash_screen.dart';
-
-

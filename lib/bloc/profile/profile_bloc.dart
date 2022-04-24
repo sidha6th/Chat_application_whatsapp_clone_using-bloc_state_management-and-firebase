@@ -26,11 +26,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         state.encodededImg = base64Encode(
           bytesimg,
         );
-        LoginState.prefs = await SharedPreferences.getInstance();
-        await LoginState.prefs?.setString(
-          ProfileState.dpImageKey,
-          state.encodededImg!,
-        );
+        // LoginState.prefs = await SharedPreferences.getInstance();
+        // await LoginState.prefs?.setString(
+        //   ProfileState.dpImageKey,
+        //   state.encodededImg!,
+        // );
         emit(
           ProfileState(
             encodededImg: state.encodededImg,
@@ -41,19 +41,43 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     saveUserDatas(SaveUserDatas event, Emitter<ProfileState> emit) async {
       UserModel data = UserModel(
+        id: LoginState.userId,
         name: event.userName,
-        phone: LoginState.loginPhoneNumberController.text,
+        phone:
+            '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',
         about: event.userAbout,
         dpImage: state.encodededImg,
       );
       final DocumentReference<Map<String, dynamic>> doc =
-          FirebaseFirestore.instance.collection(
-              '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',)
-              .doc();
-      data.id = doc.id;
-      await doc.set(
-        data.toJson(),
+          FirebaseFirestore.instance
+              .collection(
+                'users'
+              )
+              .doc(
+                '${LoginState.countryCodeController.text}${LoginState.loginPhoneNumberController.text}',
+              );
+      try {
+        await doc.set(
+          data.toJson(),
+        );
+      } on FirebaseException catch (e) {
+        debugPrint(
+          e.message,
+        );
+        debugPrint(
+          '${e.stackTrace}',
+        );
+        debugPrint(
+          e.plugin,
+        );
+      }
+      //
+      LoginState.prefs = await SharedPreferences.getInstance();
+      await LoginState.prefs?.setBool(
+        LoginState.isLoginedKey,
+        true,
       );
+      //
     }
 
     on<AddDpImage>(

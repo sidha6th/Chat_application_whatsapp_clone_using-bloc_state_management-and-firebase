@@ -9,50 +9,77 @@ class ContactListHoldingWidget extends StatelessWidget {
   final bool forAdd;
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      controller: homeState.scrollController,
-      shrinkWrap: true,
-      itemCount: homeState.contacts.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const DpHoldingWidget(color: grey,),
-          title: TextWidget(
-            text: homeState.contacts[index].displayName ??
-                homeState.contacts[index].phones![0].value.toString(),
-          ),
-          onTap: () {
-            forAdd
-                ? context.read<GroupBloc>().add(
-                      AddGroupMembers(
-                        memberName: homeState.contacts[index].displayName ??
-                            homeState.contacts[index].phones![0].value
-                                .toString(),
-                        phoneNumber: homeState.contacts[index].phones![0].value
-                            .toString(),
-                      ),
-                    )
-                : {
-                    if (homeState.contacts[index].phones?[0].value != null)
-                      {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => IndividualChatScreen(
-                              name: homeState.contacts[index].displayName ??
-                                  homeState.contacts[index].phones![0].value
-                                      .toString(),
-                              phone: homeState.contacts[index].phones![0].value
-                                  .toString(),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+          return ListView.separated(
+            controller: state.scrollController,
+            shrinkWrap: true,
+            itemCount: state.contacts.length,
+            itemBuilder: (context, index) {
+              if (forAdd) {
+                return state.contacts[index].isExistingUser
+                    ? ListTile(
+                        leading: const DpHoldingWidget(
+                          color: grey,
+                        ),
+                        title: TextWidget(
+                          text: state.contacts[index].name,
+                        ),
+                        onTap: () {
+                          context.read<GroupBloc>().add(
+                                AddGroupMembers(
+                                  memberName: state.contacts[index].name,
+                                  phoneNumber: state.contacts[index].phone,
+                                ),
+                              );
+                        },
+                      )
+                    : const SizedBox();
+              } else {
+                return ListTile(
+                  leading: const DpHoldingWidget(
+                    color: grey,
+                  ),
+                  title: TextWidget(
+                    text: state.contacts[index].name,
+                  ),
+                  trailing: state.contacts[index].isExistingUser
+                      ? const SizedBox()
+                      : Wrap(
+                          children: const <Widget>[
+                            TextWidget(
+                              text: 'Invite',
+                              color: green,
                             ),
+                            Icon(
+                              Icons.add,
+                              color: white,
+                              size: 15,
+                              textDirection: TextDirection.rtl,
+                            ),
+                          ],
+                        ),
+                  onTap: () {
+                    if (state.contacts[index].isExistingUser) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => IndividualChatScreen(
+                            isChatRoomCreated: false,
+                            name: state.contacts[index].name,
+                            phone: state.contacts[index].phone,
                           ),
-                        )
-                      }
-                  };
-          },
-        );
-      },
-      separatorBuilder: (context, index) => const Divider(
-        color: transp,
-      ),
+                        ),
+                      );
+                    }
+                  },
+                );
+              }
+            },
+            separatorBuilder: (context, index) => const Divider(
+              color: transp,
+            ),
+          );
+        },
     );
   }
 }

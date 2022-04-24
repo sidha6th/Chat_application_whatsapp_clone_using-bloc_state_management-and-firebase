@@ -6,31 +6,49 @@ class ChatMessageHoldingWidgets extends StatelessWidget {
     Key? key,
     required this.size,
     required this.phone,
+    this.chatRoomId,
   }) : super(key: key);
 
   final Size size;
   final String phone;
+  final String? chatRoomId;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: size.height * 0.83,
       width: size.width,
-      child: BlocBuilder<ChatBloc, ChatState>(
+      child: BlocConsumer<ChatBloc, ChatState>(
+        listener: (context, state) {
+          context.read<ChatBloc>().add(
+                GetConversations(
+                  phone: phone,
+                  chatRoomId: chatRoomId,
+                ),
+              );
+        },
+        // buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
           return ListView.separated(
             shrinkWrap: true,
-            itemCount: state.chatData.length,
+            itemCount: state.conversation.length,
             reverse: true,
             itemBuilder: (context, index) {
               return Row(
-                mainAxisAlignment: state.chatData[index].isSent
+                mainAxisAlignment: state.conversation[index].conversationKey !=
+                        ChatState.userPhoneNumber
                     ? MainAxisAlignment.end
                     : MainAxisAlignment.start,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
-                      right: state.chatData[index].isSent == false ? 9 : 0,
-                      left: state.chatData[index].isSent ? 0 : 9,
+                      right: state.conversation[index].conversationKey !=
+                              ChatState.userPhoneNumber
+                          ? 9
+                          : 0,
+                      left: state.conversation[index].conversationKey ==
+                              ChatState.userPhoneNumber
+                          ? 0
+                          : 9,
                     ),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -41,8 +59,10 @@ class ChatMessageHoldingWidgets extends StatelessWidget {
                         maxWidth: size.width * 0.8,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            state.chatData[index].isSent ? darkGreen : blueGrey,
+                        color: state.conversation[index].conversationKey !=
+                                ChatState.userPhoneNumber
+                            ? darkGreen
+                            : blueGrey,
                         borderRadius: BorderRadius.circular(
                           5,
                         ),
@@ -54,7 +74,7 @@ class ChatMessageHoldingWidgets extends StatelessWidget {
                             align: TextAlign.left,
                             overflow: TextOverflow.visible,
                             size: 20,
-                            text: state.chatData[index].textMessage,
+                            text: state.conversation[index].textMessage,
                           ),
                         ],
                       ),

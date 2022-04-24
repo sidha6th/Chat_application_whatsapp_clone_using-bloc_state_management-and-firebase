@@ -12,16 +12,15 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           checking: true,
         )) {
     on<CheckUserLoggedInOrNot>((event, emit) async {
-
       LoginState.prefs = await SharedPreferences.getInstance();
-      bool? islogined=LoginState.prefs?.getBool(LoginState.isLoginedKey);
-      // String? userPhoneNumber = LoginState.prefs?.getString(
-      //   LoginState.phoneNumberKey,
-      // );
+      bool? islogined = LoginState.prefs?.getBool(
+        LoginState.isLoginedKey,
+      );
       emit(
         SplashState(
           checking: false,
-          isUSerLoggedIn: (islogined == null|| islogined == false) ? false : true,
+          isUSerLoggedIn:
+              (islogined == null || islogined == false) ? false : true,
         ),
       );
     });

@@ -29,30 +29,30 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     verifyOtp(VerifyOtp event, Emitter<LoginState> emit) async {
-      PhoneAuthCredential credential;
       try {
-        credential = PhoneAuthProvider.credential(
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: state.verificationId ?? '',
           smsCode: event.otp,
         );
-        debugPrint(
-          event.otp.toString(),
-        );
+        // debugPrint(
+        //   event.otp.toString(),
+        // );
         UserCredential cred = await state.auth.signInWithCredential(
           credential,
         );
         state.user = cred.user;
+        //debugPrint(cred.user?.isAnonymous.toString());
+        // print(
+        //   'id::::::${cred.user?.uid}',
+        // );
+        //Y2kpYOxIAsT9m2jutqbaYkLSMSD3
+        //Y2kpYOxIAsT9m2jutqbaYkLSMSD3
       } on FirebaseAuthException catch (e) {
         state.loginException = e.message;
       }
 
       state.user != null
           ? {
-              LoginState.prefs = await SharedPreferences.getInstance(),
-              await LoginState.prefs?.setBool(
-                LoginState.isLoginedKey,
-                true,
-              ),
               await LoginState.prefs?.setString(
                 LoginState.phoneNumberKey,
                 state.phone.toString(),
@@ -62,6 +62,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                   builder: (ctx) => const ProfileSettingPage(),
                 ),
               ),
+              ////
+              LoginState.userId = state.user?.uid,
+              ////
             }
           : ScaffoldMessenger.of(event.context).showSnackBar(
               const SnackBar(

@@ -1,3 +1,4 @@
+import 'package:chat_app/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/bloc/profile/profile_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/view/profile_setting_page/widgets/dp_showing_widget.dart';
@@ -48,14 +49,14 @@ class ProfileSettingPage extends StatelessWidget {
                         AddDpImage(),
                       );
                 },
-                child:  BlocBuilder<ProfileBloc, ProfileState>(
+                child: BlocBuilder<ProfileBloc, ProfileState>(
                   builder: (context, state) {
                     return UserProfileDpShowingWidget(
-                                  profileState:state,
-                                  radius: 50,
-                                  icon: Icons.add_a_photo,
-                                  iconsize: 30,
-                                );
+                      profileState: state,
+                      radius: 50,
+                      icon: Icons.add_a_photo,
+                      iconsize: 30,
+                    );
                   },
                 ),
               ),
@@ -152,6 +153,9 @@ class ProfileSettingPage extends StatelessWidget {
                           userName: ProfileState.usernameController.text,
                           userAbout: ProfileState.aboutFieldController.text,
                         ),
+                      );
+                  context.read<ChatBloc>().add(
+                        GetUserChatRooms(),
                       );
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(

@@ -4,10 +4,12 @@ import 'package:chat_app/bloc/login/login_bloc.dart';
 import 'package:chat_app/bloc/profile/profile_bloc.dart';
 import 'package:chat_app/bloc/splash/splash_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
+import 'package:chat_app/extra/service/firebase_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+await FireBaseServices.getUserData();
   runApp(
     const MyApp(),
   );

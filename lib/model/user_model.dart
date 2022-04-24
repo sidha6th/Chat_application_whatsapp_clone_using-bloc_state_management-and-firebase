@@ -7,7 +7,7 @@ class UserModel {
   UserModel({
     required this.name,
     required this.phone,
-    this.id,
+    required this.id,
     this.about,
     this.dpImage,
   });

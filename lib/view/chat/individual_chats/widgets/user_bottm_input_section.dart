@@ -3,14 +3,18 @@ import 'package:chat_app/extra/exports/exports.dart';
 
 class BottomInputSection extends StatelessWidget {
   const BottomInputSection({
+    required this.isChatRoomCreated,
     required this.name,
     required this.phone,
+    this.chatRoomId,
     Key? key,
     required this.size,
   }) : super(key: key);
   final String phone;
   final String name;
   final Size size;
+  final String? chatRoomId;
+  final bool isChatRoomCreated;
 
   @override
   Widget build(BuildContext context) {
@@ -110,23 +114,27 @@ class BottomInputSection extends StatelessWidget {
             radius: 22.45,
             child: IconButton(
               icon: ValueListenableBuilder(
-                  valueListenable: ChatState.textMsg,
-                  builder: (context, String text, _) {
-                    return Icon(
-                      text.isEmpty ? Icons.mic : Icons.send,
-                      color: white,
-                    );
-                  }),
+                valueListenable: ChatState.textMsg,
+                builder: (context, String text, _) {
+                  return Icon(
+                    text.isEmpty ? Icons.mic : Icons.send,
+                    color: white,
+                  );
+                },
+              ),
               onPressed: () {
-                BlocProvider.of<ChatBloc>(context).add(
-                  SentMessage(
-                    time: DateTime.now(),
-                    name: name,
-                    phone: phone,
-                    isSent: true,
-                    message: ChatState.textMsg.value,
-                  ),
-                );
+                if (ChatState.messageController.text.isNotEmpty) {
+                  BlocProvider.of<ChatBloc>(context).add(
+                    SentMessage(
+                      chatRoomId: chatRoomId,
+                      time: DateTime.now(),
+                      name: name,
+                      receiverPhone: phone,
+                      isSent: true,
+                      message: ChatState.textMsg.value,
+                    ),
+                  );
+                }
                 ChatState.messageController.clear();
               },
             ),
