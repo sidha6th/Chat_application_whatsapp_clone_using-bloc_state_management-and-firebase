@@ -23,5 +23,6 @@ class RemoveMember extends GroupEvent {
 class AddImage extends GroupEvent {}
 
 class CreateGroup extends GroupEvent {
-  
+  final BuildContext context;
+  CreateGroup({required this.context});
 }

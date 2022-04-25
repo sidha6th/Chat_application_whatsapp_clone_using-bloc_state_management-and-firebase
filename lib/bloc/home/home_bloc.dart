@@ -1,6 +1,6 @@
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/extra/service/firebase_services.dart';
-import 'package:chat_app/extra/service/userdata.dart';
+import 'package:chat_app/extra/service/user_service.dart';
 import 'package:chat_app/model/chats_model.dart';
 import 'package:chat_app/model/contacts_model.dart';
 import 'package:chat_app/model/user_model.dart';

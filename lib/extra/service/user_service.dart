@@ -19,7 +19,7 @@ class UserDataServices {
   //*==== Removes special characters from the Phone Numbers ====*//
 
   //*======= Generates hashcode for the chat room id =======*//
-  static int getHashCode(String numbers) => numbers.trim().hashCode;
+  static String getHashCode(String numbers) => numbers.trim().hashCode.toString();
   //*======= Generates hashcode for the chat room id =======*//
 
   //*===== Getting Contact Details from the mobile devices =====*//

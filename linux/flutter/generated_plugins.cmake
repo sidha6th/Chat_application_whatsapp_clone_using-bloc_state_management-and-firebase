@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   smart_auth
-  url_launcher_linux
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

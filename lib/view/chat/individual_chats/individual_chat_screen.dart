@@ -5,7 +5,7 @@ class IndividualChatScreen extends StatelessWidget {
     required this.isChatRoomCreated,
     required this.phone,
     required this.name,
-    this.chatRoomId,
+   required this.chatRoomId,
     this.isSent = true,
     Key? key,
   }) : super(key: key);
@@ -13,7 +13,7 @@ class IndividualChatScreen extends StatelessWidget {
   final String name;
   final String phone;
   final bool isChatRoomCreated;
-  final String? chatRoomId;
+  final String chatRoomId;
 
   @override
   Widget build(BuildContext context) {

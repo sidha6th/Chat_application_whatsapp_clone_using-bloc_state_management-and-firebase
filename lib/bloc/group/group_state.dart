@@ -2,7 +2,7 @@ part of 'group_bloc.dart';
 
 class GroupState {
   final TextEditingController groupNameController = TextEditingController();
-  List<GroupMembers> groupMembers;
+  List<GroupMembersModel> groupMembers;
   String? encodedGroupDp;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   //List<UserGroupModel> userGroupList;

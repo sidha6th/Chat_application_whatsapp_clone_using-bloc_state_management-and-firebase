@@ -1,32 +1,27 @@
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/extra/service/firebase_services.dart';
-import 'package:chat_app/extra/service/userdata.dart';
+import 'package:chat_app/extra/service/user_service.dart';
 import 'package:chat_app/model/chats_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
-
 part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  ChatBloc() : super(const ChatState(conversation: [], chatsDone: [])) {
+  ChatBloc() : super(ChatState(conversation: const [], chatsDone: const [])) {
 //*================================================================================*//
-    addChatRoomForBothUser(SentMessage event) async {
+    addChatRoomForBothUser(SentMessage event,
+        {required String chatRoomId}) async {
       final UserAllChatsModel chatRoomforUser = UserAllChatsModel(
         conversationName: event.name,
         phoneNumber: event.receiverPhone,
         isGroup: false,
-        chatRoomID: UserDataServices.getHashCode(
-          '${event.receiverPhone.trim()}${ChatState.userPhoneNumber?.trim()}',
-        ).toString(),
+        chatRoomID: chatRoomId,
       );
       final UserAllChatsModel chatRoomforReciever = UserAllChatsModel(
         conversationName: FireBaseServices.userData![0].name,
         phoneNumber: ChatState.userPhoneNumber!,
         isGroup: false,
-        chatRoomID: UserDataServices.getHashCode(
-          '${event.receiverPhone.trim()}${ChatState.userPhoneNumber?.trim()}',
-        ).toString(),
+        chatRoomID: chatRoomId,
       );
 
       await FireBaseServices.createChatRoom(
@@ -41,6 +36,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     }
 
+    late List<UserAllChatsModel> chatRoom;
     sentMessage(SentMessage event, Emitter<ChatState> emit) async {
       if (ChatState.userPhoneNumber == null) {
         await UserDataServices.getPhoneNumber();
@@ -55,30 +51,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           messageRecieverName: event.name,
           // time: event.time,
         );
-        DocumentReference<Map<String, dynamic>> doc;
-        if (event.chatRoomId == null) {
-          List<UserAllChatsModel> chatRoom =
-              await FireBaseServices.checkIsThereAnyChatRoom(
+        if (event.chatRoomId.trim().isEmpty) {
+          chatRoom = await FireBaseServices.checkIsThereAnyChatRoom(
             recieverPhoneNumber: event.receiverPhone,
             userPhoneNumber: ChatState.userPhoneNumber!,
           );
           if (chatRoom.isNotEmpty) {
-            doc = FirebaseFirestore.instance
+            event.chatRoomId = chatRoom[0].chatRoomID;
+            await FirebaseFirestore.instance
                 .collection(chatRoom[0].chatRoomID)
-                .doc();
-            await doc.set(
-              data.toJson(),
-            );
+                .doc()
+                .set(data.toJson());
           } else {
-            await addChatRoomForBothUser(
-              event,
+            String chatRoomId = UserDataServices.getHashCode(
+              '${event.receiverPhone.trim()}${ChatState.userPhoneNumber?.trim()}',
             );
+            await addChatRoomForBothUser(event, chatRoomId: chatRoomId);
           }
         } else {
-          doc = FirebaseFirestore.instance.collection(event.chatRoomId!).doc();
-          await doc.set(
-            data.toJson(),
-          );
+          await FirebaseFirestore.instance
+              .collection(event.chatRoomId)
+              .doc()
+              .set(data.toJson());
         }
       }
       emit(
@@ -92,44 +86,51 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 //*================================================================================*//
 
     getConversations(GetConversations event, Emitter<ChatState> emit) async {
-      QuerySnapshot<Map<String, dynamic>> data =
-          await FirebaseFirestore.instance
-              .collection(
-                event.chatRoomId!,
-              )
-              .get();
-      emit(
-        ChatState(
+      // print(await FirebaseFirestore.instance
+      //     .collection(
+      //       event.chatRoomId.isEmpty
+      //           ? chatRoom[0].chatRoomID
+      //           : event.chatRoomId,
+      //     )
+      //     .get()
+      //     .then((value) => value.docs
+      //         .map((e) => IndividualChatModel.fromJson(e.data()))
+      //         .toList()));
+      for (var item in await FirebaseFirestore.instance
+          .collection((event.chatRoomId.isEmpty)
+              ? chatRoom[0].chatRoomID
+              : event.chatRoomId)
+          .get()
+          .then((value) => value.docs
+              .map((e) => IndividualChatModel.fromJson(e.data()))
+              .toList())) {
+        print(item.msgSentNumber);
+      }
+
+      emit(ChatState(
           chatsDone: state.chatsDone,
-          conversation: data.docs
-              .map(
-                (e) => IndividualChatModel.fromJson(
-                  e.data(),
-                ),
-              )
-              .toList(),
-        ),
-      );
+          conversation: await FirebaseFirestore.instance
+              .collection((event.chatRoomId.isEmpty)
+                  ? chatRoom[0].chatRoomID
+                  : event.chatRoomId)
+              .get()
+              .then((value) => value.docs
+                  .map((e) => IndividualChatModel.fromJson(e.data()))
+                  .toList())));
     }
 
 //*================================================================================*//
 
     getChatRooms(GetUserChatRooms event, Emitter<ChatState> emit) async {
-      QuerySnapshot<Map<String, dynamic>> data =
-          await FirebaseFirestore.instance
-              .collection(
-                ChatState.userPhoneNumber!,
-              )
-              .get();
+      state.chatsDone = await FirebaseFirestore.instance
+          .collection(ChatState.userPhoneNumber!)
+          .get()
+          .then((value) => value.docs
+              .map((e) => UserAllChatsModel.fromJson(e.data()))
+              .toList());
       emit(
         ChatState(
-          chatsDone: data.docs
-              .map(
-                (e) => UserAllChatsModel.fromJson(
-                  e.data(),
-                ),
-              )
-              .toList(),
+          chatsDone: state.chatsDone,
           conversation: state.conversation,
         ),
       );

@@ -8,7 +8,7 @@ class SentMessage extends ChatEvent {
   bool isSent;
   String message;
   DateTime time;
-  String? chatRoomId;
+  String chatRoomId;
   SentMessage({
     required this.chatRoomId,
     required this.time,
@@ -21,9 +21,9 @@ class SentMessage extends ChatEvent {
 
 class GetConversations extends ChatEvent {
   String phone;
-  String? chatRoomId;
+  final String chatRoomId;
   GetConversations({
-    this.chatRoomId,
+   required this.chatRoomId,
     required this.phone,
   });
 }

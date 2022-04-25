@@ -6,14 +6,14 @@ class BottomInputSection extends StatelessWidget {
     required this.isChatRoomCreated,
     required this.name,
     required this.phone,
-    this.chatRoomId,
+    required this.chatRoomId,
     Key? key,
     required this.size,
   }) : super(key: key);
   final String phone;
   final String name;
   final Size size;
-  final String? chatRoomId;
+  final String chatRoomId;
   final bool isChatRoomCreated;
 
   @override
@@ -24,7 +24,7 @@ class BottomInputSection extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           SizedBox(
             width: size.width * 0.85,
             child: TextField(

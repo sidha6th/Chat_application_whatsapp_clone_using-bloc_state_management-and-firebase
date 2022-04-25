@@ -1,5 +1,4 @@
 export 'package:firebase_core/firebase_core.dart';
-export 'package:firebase_database/firebase_database.dart';
 export 'package:flutter/material.dart';
 export 'package:chat_app/view/home/page_home_layout.dart';
 export 'package:chat_app/extra/constant/const_color.dart';

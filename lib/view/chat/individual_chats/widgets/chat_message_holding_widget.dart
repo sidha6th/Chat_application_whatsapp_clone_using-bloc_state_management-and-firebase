@@ -6,12 +6,12 @@ class ChatMessageHoldingWidgets extends StatelessWidget {
     Key? key,
     required this.size,
     required this.phone,
-    this.chatRoomId,
+   required this.chatRoomId,
   }) : super(key: key);
 
   final Size size;
   final String phone;
-  final String? chatRoomId;
+  final String chatRoomId;
   @override
   Widget build(BuildContext context) {
     return SizedBox(

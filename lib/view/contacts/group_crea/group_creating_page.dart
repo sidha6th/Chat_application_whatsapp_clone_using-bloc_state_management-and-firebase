@@ -11,7 +11,7 @@ class GroupCreatingPage extends StatelessWidget {
   final HomeState homeState;
   @override
   Widget build(BuildContext context) {
-    ScrollController scrollcontroller=ScrollController();
+    ScrollController scrollcontroller = ScrollController();
     return Scaffold(
       backgroundColor: homeColor,
       appBar: PreferredSize(
@@ -42,7 +42,7 @@ class GroupCreatingPage extends StatelessWidget {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) => Column(
-                        children:<Widget>[
+                        children: <Widget>[
                           StackedDpHolderwidget(
                             index: index,
                           ),
@@ -58,11 +58,7 @@ class GroupCreatingPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      separatorBuilder: (
-                        context,
-                        index,
-                      ) =>
-                          const SizedBox(
+                      separatorBuilder: (context, index) => const SizedBox(
                         width: 10,
                       ),
                       itemCount: state.groupMembers.length,

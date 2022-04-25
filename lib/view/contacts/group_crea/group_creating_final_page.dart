@@ -143,7 +143,7 @@ class GroupCreationFinalPage extends StatelessWidget {
             onPressed: () {
               if (state.formKey.currentState!.validate()) {
                 context.read<GroupBloc>().add(
-                      CreateGroup(),
+                      CreateGroup(context: context),
                     );
                 Navigator.pushAndRemoveUntil(
                   context,

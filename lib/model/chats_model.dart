@@ -7,7 +7,7 @@ class IndividualChatModel {
   final String? messageRecieverName;
   final String messageRecieverphoneNumber;
   final String textMessage;
-  final String msgSentNumber;
+  final String? msgSentNumber;
   final String? conversationKey;
   final dynamic photo;
   final DateTime? time;
@@ -50,12 +50,14 @@ class UserAllChatsModel {
   final bool isGroup;
   final String chatRoomID;
   String? conversationDp;
+  List<Map<String, dynamic>>? members;
   UserAllChatsModel({
     required this.phoneNumber,
     required this.conversationName,
     required this.isGroup,
     required this.chatRoomID,
     this.conversationDp,
+    this.members,
   });
   Map<String, dynamic> toJson() => {
         'phoneNumber': phoneNumber,

@@ -1,6 +1,6 @@
 import 'package:chat_app/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
-import 'package:chat_app/extra/service/userdata.dart';
+import 'package:chat_app/extra/service/user_service.dart';
 import 'package:chat_app/model/chats_model.dart';
 import 'package:chat_app/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,16 +52,13 @@ class FireBaseServices {
   static Future<List<UserAllChatsModel>> checkIsThereAnyChatRoom(
       {required String userPhoneNumber,
       required String recieverPhoneNumber}) async {
-    QuerySnapshot<Map<String, dynamic>>? chatroom = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection(userPhoneNumber)
         .where(recieverPhoneNumber)
-        .get();
-    //*========================*//
-
-    return chatroom.docs
-        .map((e) => UserAllChatsModel.fromJson(e.data()))
-        .toList();
+        .get()
+        .then((QuerySnapshot<Map<String, dynamic>> value) => value.docs
+            .map((e) => UserAllChatsModel.fromJson(e.data()))
+            .toList());
   }
   //*====== Checking is there already chat room created or not ======*//
 }

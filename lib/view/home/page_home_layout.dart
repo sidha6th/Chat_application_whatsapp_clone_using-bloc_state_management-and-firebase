@@ -1,8 +1,6 @@
 import 'package:chat_app/extra/exports/exports.dart';
 import 'package:chat_app/view/contacts/contacts_page.dart';
 
-TextEditingController controller = TextEditingController();
-final counterRef = FirebaseDatabase.instance.ref('counter');
 ValueNotifier<int> currentIndex = ValueNotifier(1);
 
 class MyHomePage extends StatefulWidget {
@@ -40,7 +38,6 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _handleTabIndex() {
     currentIndex.value = _tabController.index;
-    // currentIndex.notifyListeners();
   }
 
   final List<IconData> floatingIcon = [
@@ -65,15 +62,13 @@ class _MyHomePageState extends State<MyHomePage>
           children: <Widget>[
             const Center(
               child: Text(
-                'data',
+                'camera',
               ),
             ),
             SizedBox(
               width: size.width,
               height: size.height,
-              child: MainChatScreen(
-                context: context,
-              ),
+              child: const MainChatScreen(),
             ),
             SizedBox(
               width: size.width,
