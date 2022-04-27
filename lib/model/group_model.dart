@@ -25,9 +25,7 @@ class Group {
   String? groupDp;
   final String groupId;
   final String groupName;
-  List<Map<String,dynamic>> members;
   Group({
-    required this.members,
     required this.groupName,
     this.groupDp,
     required this.groupId,
@@ -36,13 +34,15 @@ class Group {
   Map<String, dynamic> toJson() => {
         'groupName': groupName,
         'groupId': groupId,
-        'members': members,
         'groupDp': groupDp,
       };
 
   static Group fromJson(Map<String, dynamic> json) => Group(
-        members: json['members'],
         groupName: json['groupName'],
         groupId: json['groupId'],
       );
 }
+
+
+
+

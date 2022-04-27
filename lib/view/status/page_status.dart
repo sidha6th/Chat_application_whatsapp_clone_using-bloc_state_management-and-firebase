@@ -14,7 +14,10 @@ class StatusPage extends StatelessWidget {
             height: 45,
             child: Stack(
               children: const [
-                DpHoldingWidget(color: grey,),
+                DpHoldingWidget(
+                  encodedImg: '',
+                  color: grey,
+                ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: CircleAvatar(
@@ -30,8 +33,14 @@ class StatusPage extends StatelessWidget {
               ],
             ),
           ),
-          title: const TextWidget(text: 'My Status',color: white,),
-          subtitle: const TextWidget(text: 'Tap to add status update',color: grey,),
+          title: const TextWidget(
+            text: 'My Status',
+            color: white,
+          ),
+          subtitle: const TextWidget(
+            text: 'Tap to add status update',
+            color: grey,
+          ),
         ),
         Expanded(
           child: ListView.builder(
@@ -39,7 +48,10 @@ class StatusPage extends StatelessWidget {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             itemBuilder: (context, index) => const ListTile(
-              leading: DpHoldingWidget(color: grey,),
+              leading: DpHoldingWidget(
+                color: grey,
+                encodedImg: '',
+              ),
               title: TextWidget(
                 text: 'Title',
                 weight: FontWeight.bold,

@@ -9,7 +9,11 @@ class SentMessage extends ChatEvent {
   String message;
   DateTime time;
   String chatRoomId;
+  final bool isGroup;
+  final String userNumber;
   SentMessage({
+    required this.userNumber,
+    required this.isGroup,
     required this.chatRoomId,
     required this.time,
     required this.name,
@@ -22,10 +26,15 @@ class SentMessage extends ChatEvent {
 class GetConversations extends ChatEvent {
   String phone;
   final String chatRoomId;
+  final bool isGroup;
   GetConversations({
-   required this.chatRoomId,
+    required this.chatRoomId,
+    required this.isGroup,
     required this.phone,
   });
 }
 
-class GetUserChatRooms extends ChatEvent {}
+class GetUserChatRooms extends ChatEvent {
+  final List<UserAllChatsModel>? snapshotData;
+  GetUserChatRooms({this.snapshotData});
+}

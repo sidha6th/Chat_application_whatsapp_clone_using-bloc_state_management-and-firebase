@@ -15,6 +15,7 @@ class StackedDpHolderwidget extends StatelessWidget {
       child: Stack(
         children: [
           const DpHoldingWidget(
+            encodedImg: '',
             color: grey,
           ),
           Align(

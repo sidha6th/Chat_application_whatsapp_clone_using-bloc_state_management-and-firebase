@@ -107,26 +107,20 @@ class GroupCreationFinalPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 100,
-                    mainAxisExtent: 90,
-                  ),
+                      maxCrossAxisExtent: 100, mainAxisExtent: 90),
                   itemCount: state.groupMembers.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         const DpHoldingWidget(
-                          isPerson: true,
-                          color: grey,
-                          radius: 30,
-                        ),
+                          encodedImg: '',
+                            isGroup: false, color: grey, radius: 30),
                         TextWidget(
-                          text: state.groupMembers[index].memberName.length > 12
-                              ? state.groupMembers[index].memberName.substring(
-                                  0,
-                                  12,
-                                )
-                              : state.groupMembers[index].memberName,
-                        ),
+                            text:
+                                state.groupMembers[index].memberName.length > 12
+                                    ? state.groupMembers[index].memberName
+                                        .substring(0, 12)
+                                    : state.groupMembers[index].memberName),
                       ],
                     );
                   },
@@ -142,16 +136,11 @@ class GroupCreationFinalPage extends StatelessWidget {
             backgroundColor: green,
             onPressed: () {
               if (state.formKey.currentState!.validate()) {
-                context.read<GroupBloc>().add(
-                      CreateGroup(context: context),
-                    );
+                context.read<GroupBloc>().add(CreateGroup(context: context));
                 Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (ctx) => const MyHomePage(),
-                  ),
-                  (route) => false,
-                );
+                    context,
+                    MaterialPageRoute(builder: (ctx) => const MyHomePage()),
+                    (route) => false);
               }
             },
             child: const Icon(

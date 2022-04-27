@@ -19,44 +19,31 @@ class ContactListHoldingWidget extends StatelessWidget {
             if (forAdd) {
               return state.contacts[index].isExistingUser
                   ? ListTile(
-                      leading: const DpHoldingWidget(
-                        color: grey,
-                      ),
-                      title: TextWidget(
-                        text: state.contacts[index].name,
-                      ),
+                      leading: const DpHoldingWidget(color: grey,encodedImg: ''),
+                      title: TextWidget(text: state.contacts[index].name),
                       onTap: () {
-                        context.read<GroupBloc>().add(
-                              AddGroupMembers(
-                                memberName: state.contacts[index].name,
-                                phoneNumber: state.contacts[index].phone,
-                              ),
-                            );
+                        context.read<GroupBloc>().add(AddGroupMembers(
+                            memberName: state.contacts[index].name,
+                            phoneNumber: state.contacts[index].phone));
                       },
                     )
                   : const SizedBox();
             } else {
               return ListTile(
                 leading: const DpHoldingWidget(
+                  encodedImg: '',
                   color: grey,
                 ),
-                title: TextWidget(
-                  text: state.contacts[index].name,
-                ),
+                title: TextWidget(text: state.contacts[index].name),
                 trailing: state.contacts[index].isExistingUser
                     ? const SizedBox()
                     : Wrap(
                         children: const <Widget>[
-                          TextWidget(
-                            text: 'Invite',
-                            color: green,
-                          ),
-                          Icon(
-                            Icons.add,
-                            color: white,
-                            size: 15,
-                            textDirection: TextDirection.rtl,
-                          ),
+                          TextWidget(text: 'Invite', color: green),
+                          Icon(Icons.add,
+                              color: white,
+                              size: 15,
+                              textDirection: TextDirection.rtl),
                         ],
                       ),
                 onTap: () {
@@ -64,6 +51,8 @@ class ContactListHoldingWidget extends StatelessWidget {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => IndividualChatScreen(
+                          encodedDp: '',
+                          isGroup: false,
                           chatRoomId: '',
                           isChatRoomCreated: false,
                           name: state.contacts[index].name,

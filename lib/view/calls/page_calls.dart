@@ -10,6 +10,7 @@ class MainCallsScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         return ListTile(
           leading: const DpHoldingWidget(
+            encodedImg: '',
             color: grey,
           ),
           title: const TextWidget(

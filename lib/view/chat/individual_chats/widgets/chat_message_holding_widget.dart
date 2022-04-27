@@ -1,17 +1,24 @@
 import 'package:chat_app/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/extra/exports/exports.dart';
+import 'package:flutter/gestures.dart';
+
+ScrollController scrollController = ScrollController();
 
 class ChatMessageHoldingWidgets extends StatelessWidget {
   const ChatMessageHoldingWidgets({
     Key? key,
+    required this.isChatRoomCreated,
     required this.size,
     required this.phone,
-   required this.chatRoomId,
+    required this.chatRoomId,
+    required this.isGroup,
   }) : super(key: key);
 
   final Size size;
   final String phone;
   final String chatRoomId;
+  final bool isChatRoomCreated;
+  final bool isGroup;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -21,65 +28,41 @@ class ChatMessageHoldingWidgets extends StatelessWidget {
         listener: (context, state) {
           context.read<ChatBloc>().add(
                 GetConversations(
+                  isGroup: isGroup,
                   phone: phone,
                   chatRoomId: chatRoomId,
                 ),
               );
         },
-        // buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
           return ListView.separated(
-            shrinkWrap: true,
+            padding: const EdgeInsets.only(top: 20),
+            controller: scrollController,
             itemCount: state.conversation.length,
-            reverse: true,
+            dragStartBehavior: DragStartBehavior.down,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemBuilder: (context, index) {
               return Row(
-                mainAxisAlignment: state.conversation[index].conversationKey !=
-                        ChatState.userPhoneNumber
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.start,
+                mainAxisAlignment:
+                    state.conversation[index].messageSentNumber ==
+                            ChatState.userPhoneNumber
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: state.conversation[index].conversationKey !=
-                              ChatState.userPhoneNumber
-                          ? 9
-                          : 0,
-                      left: state.conversation[index].conversationKey ==
-                              ChatState.userPhoneNumber
-                          ? 0
-                          : 9,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      constraints: BoxConstraints(
-                        maxWidth: size.width * 0.8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: state.conversation[index].conversationKey !=
-                                ChatState.userPhoneNumber
-                            ? darkGreen
-                            : blueGrey,
-                        borderRadius: BorderRadius.circular(
-                          5,
+                  state.conversation[index].messageSentNumber ==
+                          ChatState.userPhoneNumber
+                      ? SentMessageCard(
+                          size: size,
+                          isGroup: isGroup,
+                          index: index,
+                          state: state,
+                        )
+                      : ReceiveMessageCard(
+                          size: size,
+                          isGroup: isGroup,
+                          index: index,
+                          state: state,
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          TextWidget(
-                            color: white,
-                            align: TextAlign.left,
-                            overflow: TextOverflow.visible,
-                            size: 20,
-                            text: state.conversation[index].textMessage,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
                 ],
               );
             },

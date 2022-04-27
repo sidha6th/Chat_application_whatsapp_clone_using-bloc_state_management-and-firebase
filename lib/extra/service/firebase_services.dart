@@ -9,6 +9,7 @@ class FireBaseServices {
   static List<UserModel>? userData;
 
   //*====== getting only the current user datas ======*//
+
   static getUserData() async {
     await UserDataServices.getPhoneNumber();
     if (ChatState.userPhoneNumber != null) {
@@ -23,18 +24,22 @@ class FireBaseServices {
           .toList();
     }
   }
+
   //*====== getting only the current user datas ======*//
 
   //*====== getting whole users from the database ======*//
+
   static getAllUsers() async {
     QuerySnapshot<Map<String, dynamic>> users =
         await FirebaseFirestore.instance.collection('users').get();
     HomeState.allUsers =
         users.docs.map((e) => UserModel.fromJson(e.data())).toList();
   }
+
   //*====== getting whole users from the database ======*//
 
   //*====== Creating Chat Room for the first chat ======*//
+
   static createChatRoom(
       {required String phoneNumberOne,
       required UserAllChatsModel chatRoom,
@@ -46,19 +51,23 @@ class FireBaseServices {
           chatRoom.toJson(),
         );
   }
+
   //*====== Creating Chat Room for the first chat ======*//
 
   //*====== Checking is there already chat room created or not ======*//
-  static Future<List<UserAllChatsModel>> checkIsThereAnyChatRoom(
+
+  static Future<UserAllChatsModel?> checkIsThereAnyChatRoom(
       {required String userPhoneNumber,
       required String recieverPhoneNumber}) async {
-    return await FirebaseFirestore.instance
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
         .collection(userPhoneNumber)
-        .where(recieverPhoneNumber)
-        .get()
-        .then((QuerySnapshot<Map<String, dynamic>> value) => value.docs
-            .map((e) => UserAllChatsModel.fromJson(e.data()))
-            .toList());
+        .doc(recieverPhoneNumber)
+        .get();
+    return snapshot.data() == null
+        ? null
+        : UserAllChatsModel.fromJson(snapshot.data()!);
   }
+
   //*====== Checking is there already chat room created or not ======*//
 }

@@ -2,6 +2,8 @@ import 'package:chat_app/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/bloc/group/group_bloc.dart';
 import 'package:chat_app/model/chats_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupServices {
   //*========= Checking the user is already added or not to the group =========*//
@@ -34,13 +36,15 @@ class GroupServices {
         .set(object.toJson());
   }
 
-  static Stream<List<UserAllChatsModel>> getUserChatRooms()async*{
-    yield await FirebaseFirestore.instance
-          .collection(ChatState.userPhoneNumber!)
-          .get()
-          .then((value) => value.docs
-              .map((e) => UserAllChatsModel.fromJson(e.data()))
-              .toList());
+  static Stream<List<UserAllChatsModel>> getUserChatRooms(
+      {required BuildContext context}) async* {
+    BlocProvider.of<ChatBloc>(context).add(GetUserChatRooms());
+     yield await FirebaseFirestore.instance
+        .collection(ChatState.userPhoneNumber!)
+        .get()
+        .then((value) => value.docs
+            .map((e) => UserAllChatsModel.fromJson(e.data()))
+            .toList());
   }
 
   //*================ Adding Group Chat Room to all user Mobile Numbers ================*//

@@ -47,15 +47,12 @@ class GroupCreatingPage extends StatelessWidget {
                             index: index,
                           ),
                           TextWidget(
-                            text:
-                                state.groupMembers[index].memberName.length > 12
-                                    ? state.groupMembers[index].memberName
-                                        .substring(
-                                        0,
-                                        12,
-                                      )
-                                    : state.groupMembers[index].memberName,
-                          ),
+                              text:
+                                  state.groupMembers[index].memberName.length >
+                                          12
+                                      ? state.groupMembers[index].memberName
+                                          .substring(0, 12)
+                                      : state.groupMembers[index].memberName),
                         ],
                       ),
                       separatorBuilder: (context, index) => const SizedBox(

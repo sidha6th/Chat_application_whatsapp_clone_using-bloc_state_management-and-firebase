@@ -1,44 +1,43 @@
-// enum messageType {
-//   sent,
-//   receive,
-// }
-
 class IndividualChatModel {
   final String? messageRecieverName;
-  final String messageRecieverphoneNumber;
+  final String messageSentNumber;
+  final String? messageSentName;
+  final String? messageRecieverphoneNumber;
   final String textMessage;
-  final String? msgSentNumber;
   final String? conversationKey;
   final dynamic photo;
-  final DateTime? time;
+  final DateTime time;
   IndividualChatModel({
-     this.time,
+    required this.time,
+    required this.messageRecieverName,
+    required this.messageSentName,
+    required this.messageSentNumber,
     required this.textMessage,
-    required this.msgSentNumber,
     required this.messageRecieverphoneNumber,
     required this.conversationKey,
-    this.messageRecieverName,
     this.photo,
   });
 
   Map<String, dynamic> toJson() => {
-        'msgSentNumber': msgSentNumber,
         'messageRecieverName': messageRecieverName,
         'messageRecieverphoneNumber': messageRecieverphoneNumber,
         'textMessage': textMessage,
-        'time': time,
+        'conversationKey':conversationKey,
+        'messageSentName':messageSentName,
+        'messageSentNumber':messageSentNumber,
+        'time': time.toUtc(),
         'photo': photo,
-        'key': conversationKey,
       };
 
   static IndividualChatModel fromJson(Map<String, dynamic> json) {
     return IndividualChatModel(
+      messageSentName: json['messageSentName'],
+      messageSentNumber: json['messageSentNumber'],
       conversationKey: json['conversationKey'],
       messageRecieverName: json['messageRecieverName'],
       photo: json['photo'],
-      msgSentNumber: json['msgSentNumber'],
       textMessage: json['textMessage'],
-      //time: json['time'],
+      time: json['time'].toDate(),
       messageRecieverphoneNumber: json['messageRecieverphoneNumber'],
     );
   }

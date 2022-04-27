@@ -3,11 +3,13 @@ import 'package:chat_app/extra/exports/exports.dart';
 class IndividualChatAppBarWidget extends StatelessWidget {
   const IndividualChatAppBarWidget({
     Key? key,
+    required this.isGroup,
     required this.titleName,
-    this.dpImage,
+    required this.encodedDp,
   }) : super(key: key);
   final String titleName;
-  final String? dpImage;
+  final bool isGroup;
+  final String encodedDp;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +37,11 @@ class IndividualChatAppBarWidget extends StatelessWidget {
               Icons.arrow_back,
             ),
           ),
-          const DpHoldingWidget(
+          DpHoldingWidget(
+            encodedImg: encodedDp,
+            isGroup: isGroup,
             color: grey,
-            size: Size(
+            size: const Size(
               30,
               30,
             ),

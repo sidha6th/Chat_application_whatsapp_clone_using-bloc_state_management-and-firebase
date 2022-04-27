@@ -7,6 +7,7 @@ class BottomInputSection extends StatelessWidget {
     required this.name,
     required this.phone,
     required this.chatRoomId,
+    required this.isGroup,
     Key? key,
     required this.size,
   }) : super(key: key);
@@ -15,6 +16,7 @@ class BottomInputSection extends StatelessWidget {
   final Size size;
   final String chatRoomId;
   final bool isChatRoomCreated;
+  final bool isGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -124,15 +126,22 @@ class BottomInputSection extends StatelessWidget {
               ),
               onPressed: () {
                 if (ChatState.messageController.text.isNotEmpty) {
-                  BlocProvider.of<ChatBloc>(context).add(
-                    SentMessage(
-                      chatRoomId: chatRoomId,
-                      time: DateTime.now(),
-                      name: name,
-                      receiverPhone: phone,
-                      isSent: true,
-                      message: ChatState.textMsg.value,
-                    ),
+                  context.read<ChatBloc>().add(
+                        SentMessage(
+                          userNumber: ChatState.userPhoneNumber!,
+                          isGroup: isGroup,
+                          chatRoomId: chatRoomId,
+                          time: DateTime.now(),
+                          name: name,
+                          receiverPhone: phone,
+                          isSent: true,
+                          message: ChatState.textMsg.value,
+                        ),
+                      );
+                      scrollController.animateTo(
+                    scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.bounceIn,
                   );
                 }
                 ChatState.messageController.clear();

@@ -2,10 +2,12 @@ import 'package:chat_app/extra/exports/exports.dart';
 
 class IndividualChatScreen extends StatelessWidget {
   const IndividualChatScreen({
+    required this.encodedDp,
     required this.isChatRoomCreated,
     required this.phone,
     required this.name,
-   required this.chatRoomId,
+    required this.chatRoomId,
+    required this.isGroup,
     this.isSent = true,
     Key? key,
   }) : super(key: key);
@@ -14,6 +16,8 @@ class IndividualChatScreen extends StatelessWidget {
   final String phone;
   final bool isChatRoomCreated;
   final String chatRoomId;
+  final bool isGroup;
+  final String encodedDp;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +30,24 @@ class IndividualChatScreen extends StatelessWidget {
           50,
         ),
         child: IndividualChatAppBarWidget(
+          encodedDp: encodedDp,
+          isGroup: isGroup,
           titleName: name,
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
+      body: Column(
         children: [
-          ChatMessageHoldingWidgets(
-            chatRoomId: chatRoomId,
-            size: size,
-            phone: phone,
+          Expanded(
+            child: ChatMessageHoldingWidgets(
+              isGroup: isGroup,
+              isChatRoomCreated: isChatRoomCreated,
+              chatRoomId: chatRoomId,
+              size: size,
+              phone: phone,
+            ),
           ),
           BottomInputSection(
+            isGroup: isGroup,
             chatRoomId: chatRoomId,
             isChatRoomCreated: isChatRoomCreated,
             name: name,

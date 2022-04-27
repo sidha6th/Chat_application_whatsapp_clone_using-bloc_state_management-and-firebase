@@ -7,9 +7,9 @@ class UserDataServices {
   static String? honeNumber;
 
   //*==== Getting PhoneNumber from Sharedpreference ====*//
-  static getPhoneNumber() async {
+  static Future<void> getPhoneNumber() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
-     ChatState.userPhoneNumber = pref.getString(LoginState.phoneNumberKey);
+    ChatState.userPhoneNumber = pref.getString(LoginState.phoneNumberKey);
   }
   //*==== Getting PhoneNumber from Sharedpreference ====*//
 
@@ -19,10 +19,16 @@ class UserDataServices {
   //*==== Removes special characters from the Phone Numbers ====*//
 
   //*======= Generates hashcode for the chat room id =======*//
-  static String getHashCode(String numbers) => numbers.trim().hashCode.toString();
+  static String getHashCode(String numbers) =>
+      numbers.trim().hashCode.toString();
   //*======= Generates hashcode for the chat room id =======*//
 
   //*===== Getting Contact Details from the mobile devices =====*//
   static Future<List<Contact>> getContacts() => ContactsService.getContacts();
   //*===== Getting Contact Details from the mobile devices =====*//
+
+  //*===== Formates the Date And Time =====*//
+  static String getDateFormate({required DateTime time}) =>
+      '${time.hour > 12 ? time.hour - 12 : time.hour}:${time.minute < 10 ? '0${time.minute}' : '${time.minute}'} ${time.hour > 12 ? 'pm' : 'am'}';
+  //*===== Formates the Date And Time =====*//
 }

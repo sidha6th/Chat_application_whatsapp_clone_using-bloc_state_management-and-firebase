@@ -27,6 +27,7 @@ class TextWidget extends StatelessWidget {
         fontWeight: weight,
         color: color,
       ),
+      maxLines: 100,
       overflow: overflow,
     );
   }

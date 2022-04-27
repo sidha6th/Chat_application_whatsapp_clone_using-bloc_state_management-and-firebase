@@ -72,17 +72,14 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
           temp.add(item.toJson());
         }
         final UserAllChatsModel allChatsModel = UserAllChatsModel(
+          conversationDp: state.encodedGroupDp,
           phoneNumber: ChatState.userPhoneNumber!,
           conversationName: state.groupNameController.text,
           isGroup: true,
           chatRoomID: DateTime.now().millisecondsSinceEpoch.toString(),
           members: temp,
         );
-
-        await FirebaseFirestore.instance
-            .collection(allChatsModel.chatRoomID)
-            .doc()
-            .set(allChatsModel.toJson());
+        state.encodedGroupDp = '';
 
         //*============== Adding group creater to the group ============*//
 
@@ -103,10 +100,10 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
           );
         }
 
-             //event.context.read<ChatBloc>().add(GetUserChatRooms());
         //*============== Adding group members to the group ============*//
       },
     );
+
     //*=======================================================*//
   }
 }

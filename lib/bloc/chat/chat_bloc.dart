@@ -36,83 +36,69 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     }
 
-    late List<UserAllChatsModel> chatRoom;
+    UserAllChatsModel? object;
     sentMessage(SentMessage event, Emitter<ChatState> emit) async {
       if (ChatState.userPhoneNumber == null) {
         await UserDataServices.getPhoneNumber();
       }
       ChatState.textMsg.value = '';
       if (ChatState.userPhoneNumber != null) {
-        final IndividualChatModel data = IndividualChatModel(
-          conversationKey: ChatState.userPhoneNumber,
-          msgSentNumber: ChatState.userPhoneNumber!,
+        // print(ChatState.userPhoneNumber);
+        final IndividualChatModel chatData = IndividualChatModel(
+          messageSentName: event.userNumber,
+          messageSentNumber: event.userNumber,
+          conversationKey: DateTime.now().millisecondsSinceEpoch.toString(),
           messageRecieverphoneNumber: event.receiverPhone,
           textMessage: event.message,
           messageRecieverName: event.name,
-          // time: event.time,
+          time: event.time,
         );
-        if (event.chatRoomId.trim().isEmpty) {
-          chatRoom = await FireBaseServices.checkIsThereAnyChatRoom(
-            recieverPhoneNumber: event.receiverPhone,
-            userPhoneNumber: ChatState.userPhoneNumber!,
-          );
-          if (chatRoom.isNotEmpty) {
-            event.chatRoomId = chatRoom[0].chatRoomID;
-            await FirebaseFirestore.instance
-                .collection(chatRoom[0].chatRoomID)
-                .doc()
-                .set(data.toJson());
-          } else {
-            String chatRoomId = UserDataServices.getHashCode(
-              '${event.receiverPhone.trim()}${ChatState.userPhoneNumber?.trim()}',
-            );
-            await addChatRoomForBothUser(event, chatRoomId: chatRoomId);
-          }
-        } else {
+        if (event.isGroup) {
           await FirebaseFirestore.instance
               .collection(event.chatRoomId)
               .doc()
-              .set(data.toJson());
+              .set(chatData.toJson());
+        } else {
+          if (event.chatRoomId.trim().isEmpty) {
+            object = await FireBaseServices.checkIsThereAnyChatRoom(
+              recieverPhoneNumber: event.receiverPhone,
+              userPhoneNumber: ChatState.userPhoneNumber!,
+            );
+            if (object != null) {
+              await FirebaseFirestore.instance
+                  .collection(object!.chatRoomID)
+                  .doc()
+                  .set(chatData.toJson());
+            } else {
+              String chatRoomId = UserDataServices.getHashCode(
+                '${event.receiverPhone.trim()}${ChatState.userPhoneNumber?.trim()}',
+              );
+              await addChatRoomForBothUser(event, chatRoomId: chatRoomId);
+              await FirebaseFirestore.instance
+                  .collection(chatRoomId)
+                  .doc()
+                  .set(chatData.toJson());
+            }
+          } else {
+            await FirebaseFirestore.instance
+                .collection(event.chatRoomId)
+                .doc()
+                .set(chatData.toJson());
+          }
         }
       }
-      emit(
-        ChatState(
-          conversation: state.conversation,
-          chatsDone: state.chatsDone,
-        ),
-      );
     }
 
 //*================================================================================*//
 
     getConversations(GetConversations event, Emitter<ChatState> emit) async {
-      // print(await FirebaseFirestore.instance
-      //     .collection(
-      //       event.chatRoomId.isEmpty
-      //           ? chatRoom[0].chatRoomID
-      //           : event.chatRoomId,
-      //     )
-      //     .get()
-      //     .then((value) => value.docs
-      //         .map((e) => IndividualChatModel.fromJson(e.data()))
-      //         .toList()));
-      for (var item in await FirebaseFirestore.instance
-          .collection((event.chatRoomId.isEmpty)
-              ? chatRoom[0].chatRoomID
-              : event.chatRoomId)
-          .get()
-          .then((value) => value.docs
-              .map((e) => IndividualChatModel.fromJson(e.data()))
-              .toList())) {
-        print(item.msgSentNumber);
-      }
-
       emit(ChatState(
           chatsDone: state.chatsDone,
           conversation: await FirebaseFirestore.instance
               .collection((event.chatRoomId.isEmpty)
-                  ? chatRoom[0].chatRoomID
+                  ? object!.chatRoomID
                   : event.chatRoomId)
+              .orderBy('time')
               .get()
               .then((value) => value.docs
                   .map((e) => IndividualChatModel.fromJson(e.data()))
@@ -128,12 +114,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           .then((value) => value.docs
               .map((e) => UserAllChatsModel.fromJson(e.data()))
               .toList());
-      emit(
-        ChatState(
-          chatsDone: state.chatsDone,
-          conversation: state.conversation,
-        ),
-      );
+      if (event.snapshotData != null) {
+        emit(
+          ChatState(
+            chatsDone: event.snapshotData!,
+            conversation: state.conversation,
+          ),
+        );
+      } else {
+        emit(
+          ChatState(
+            chatsDone: state.chatsDone,
+            conversation: state.conversation,
+          ),
+        );
+      }
     }
 
     on<GetUserChatRooms>(getChatRooms);
